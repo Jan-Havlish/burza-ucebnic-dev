@@ -1,0 +1,10 @@
+.image-container {
+    width: 15rem; /* Set the desired width */
+    overflow: hidden;
+    padding: auto;
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: auto;
+  }

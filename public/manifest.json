@@ -1,0 +1,10 @@
+{
+  "short_name": "eBurzaUcebnic",
+  "name": "Elektronická burza učebnic na AGKM",
+  "icons": [],
+  "start_url": "/",
+  "background_color": "#303F9F",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#303F9F"
+}
