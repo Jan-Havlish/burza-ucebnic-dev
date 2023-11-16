@@ -9,9 +9,9 @@
 
 .conversation {
   display: flex;
-  flex-direction: column; /* Změňte směr flexu na column-reverse */
-  justify-content: flex-start; /* Změňte justify-content na flex-start */
+  flex-direction: column;
+  justify-content: flex-start;
   margin: 0 auto;
   padding: 10px;
-  overflow-y: auto; /* Použijte overflow-y pro vertikální scrollování */
+  overflow-y: auto;
 }

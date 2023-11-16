@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
 import { kategorie } from "../data/kategore";
 import { useUser } from "./UserContext";
-
 import { projectFirestore } from "../firebase/config";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import ShowBooks from "./ShowBooks";
@@ -15,16 +13,16 @@ const MyBooks = () => {
   async function getDocumentsByFieldValue(
     collection_name,
     fieldName,
-    fieldValue
+    fieldValue,
   ) {
     const q = query(
       collection(projectFirestore, collection_name),
-      where(fieldName, "==", fieldValue)
+      where(fieldName, "==", fieldValue),
     );
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
+      // doc.data() is never undefined for query doc snapshots, takže netřeba ošetřovat
 
       const docObject = {
         ...doc.data(),
@@ -36,6 +34,7 @@ const MyBooks = () => {
   }
 
   useEffect(() => {
+    // vždy se změnou uživatele se změní
     kategorie.forEach((kategorie) => {
       getDocumentsByFieldValue(kategorie, "owner", user.displayName);
     });
@@ -46,8 +45,10 @@ const MyBooks = () => {
     <>
       {user && (
         <>
-          <h5 style={{ marginLeft: "16px", marginTop: "16px" }}>Moje učebnice</h5>
-          <ShowBooks books={books} shortMode={true}/>
+          <h5 style={{ marginLeft: "16px", marginTop: "16px" }}>
+            Moje učebnice
+          </h5>
+          <ShowBooks books={books} shortMode={true} />
         </>
       )}
     </>

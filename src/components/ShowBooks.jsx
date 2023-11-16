@@ -9,7 +9,6 @@ import { query, orderBy, limit, getDocs } from "firebase/firestore";
 
 import { useUser } from "../components/UserContext";
 
-
 const ShowBooks = (props) => {
   const user = useUser();
 
@@ -30,24 +29,33 @@ const ShowBooks = (props) => {
       console.log(book, "book");
       const conversationID = book.id;
 
-        const conversationRef = doc(
+      const conversationRef = doc(
         projectFirestore,
         "konverzace",
-        `${conversationID}`
+        `${conversationID}`,
       );
       const messagesRef = collection(conversationRef, "messages");
 
-      const newestDocument = await getNewestDocument(messagesRef, conversationID);
+      const newestDocument = await getNewestDocument(
+        messagesRef,
+        conversationID,
+      );
       console.log(newestDocument, "newestDocument");
-      
+
       if (!newestDocument) {
         return;
       }
-      const autorOfNewestDocument = newestDocument.autor
+      const autorOfNewestDocument = newestDocument.autor;
       console.log(autorOfNewestDocument, "autorOfNewestDocument");
 
+      if (!user) {
+        return;
+      }
       if (autorOfNewestDocument !== user.email) {
-        setBooksWithUnrespondedComments(...booksWithUnrespondedComments, book.id);
+        setBooksWithUnrespondedComments(
+          ...booksWithUnrespondedComments,
+          book.id,
+        );
       }
     });
   };
@@ -59,7 +67,10 @@ const ShowBooks = (props) => {
   console.log(props, "ShowBooks");
   const bookCards = props.books.map((book) => (
     <>
-      {console.log(booksWithUnrespondedComments, "booksWithUnrespondedComments")}
+      {console.log(
+        booksWithUnrespondedComments,
+        "booksWithUnrespondedComments",
+      )}
 
       <SchoolBook
         key={book.id}
@@ -68,7 +79,7 @@ const ShowBooks = (props) => {
         unReadComments={
           booksWithUnrespondedComments.includes(book.id) ? true : false
         }
-        isMyBook={book.owner === user.displayName ? true : false}
+        isMyBook={user && (book.owner === user.displayName ? true : false)}
       />
     </>
   ));

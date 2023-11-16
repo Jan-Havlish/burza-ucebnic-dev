@@ -14,7 +14,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import User from "./pages/User";
 import Logout from "./pages/Logout";
-import AddSchoolBook from "./AddSchoolBook";
+import AddSchoolBook from "./pages/AddSchoolBook";
 
 // https://docs.google.com/document/d/1pPhj56B_XYnTKNOXjq2QV3wJej35gDcNRLUIpPRTfDs/edit?pli=1
 

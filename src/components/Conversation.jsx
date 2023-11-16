@@ -1,26 +1,19 @@
 import { useState, useEffect } from "react";
-import {
-  collection,
-  doc,
-  collectionGroup,
-  onSnapshot,
-  addDoc,
-} from "firebase/firestore";
+import { collection, doc, addDoc } from "firebase/firestore";
 import { projectFirestore } from "../firebase/config";
 import { Card, Dropdown } from "react-bootstrap";
 import "./Conversation.css";
-
-import compareByTimeStamp from "../functions/compareByTimeStamp";
-
 import { useUser } from "./UserContext";
 import { Link } from "react-router-dom";
 
 import getMessagesFromConversation from "../functions/getMessagesFromConversation";
+import compareByTimeStamp from "../functions/compareByTimeStamp";
 
 const Conversation = (props) => {
-  const user = useUser();
+  const user = useUser(); // získání uživatele
 
   if (!user) {
+    // není-li přihlášen, tak je vyzván
     return (
       <p className="text-warning">
         Musíte se <Link to="/login">přihlásit</Link>, abyste mohli kontaktovat
@@ -31,19 +24,20 @@ const Conversation = (props) => {
 
   const conversationID = props.conversationID;
   const [messages, setMessages] = useState([]);
-
   const [addressee, setAddressee] = useState(
-    user.displayName === props.bookOwner ? null : props.bookOwner
-  ); // nastavuje je se jméno místo e-mailu, který používá vlastník knihy
+    user.email === props.bookOwnerEmail ? null : props.bookOwnerEmail,
+  );
 
   const [availableAuthors, setAvailableAuthors] = useState([]);
 
   const handleSelect = (eventKey) => {
+    // nastavení adresáta
     console.log(eventKey, "handleSelect");
     setAddressee(eventKey);
   };
 
   const findAllAuthors = async () => {
+    // ve všech zprávách najde všechny autory zpráv
     messages.forEach((message) => {
       if (!availableAuthors.includes(message.autor)) {
         setAvailableAuthors((availableAuthors) => [
@@ -53,14 +47,18 @@ const Conversation = (props) => {
       }
     });
 
-    setAvailableAuthors((availableAuthors) =>
-      Array.from(new Set(availableAuthors)).filter(
-        (author) => author !== user.email
-      )
+    setAvailableAuthors(
+      (
+        availableAuthors, // aby byl každý autor byl v listu jen jednou
+      ) =>
+        Array.from(new Set(availableAuthors)).filter(
+          (author) => author !== user.email,
+        ),
     );
   };
 
   const addInnerDocument = async (collection_name, docID, data) => {
+    // do určité kolekce uvnitř dokumentu vloží data
     try {
       const docRef = doc(projectFirestore, collection_name, docID);
       console.log("mám refdoc");
@@ -73,10 +71,11 @@ const Conversation = (props) => {
   };
 
   const saveNotificationToFirestore = async (data) => {
+    // uloží každou odeslnou zprávu do kolekce, ze které půjde zprávy odeslat
     try {
       const docRef = await addDoc(
         collection(projectFirestore, "notifications"),
-        data
+        data,
       );
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -85,24 +84,27 @@ const Conversation = (props) => {
   };
 
   useEffect(() => {
+    // získání zpráv a nastavení jména uživatele
     getMessagesFromConversation(
       conversationID,
       setMessages,
-      compareByTimeStamp
+      compareByTimeStamp,
     );
     setUserName(user.email);
   }, []);
 
   useEffect(() => {
+    // získá všechny autory, aktulizuje se s každou příchozí zprávou
     findAllAuthors();
     console.log(availableAuthors, "availableAuthors");
   }, [messages]);
 
   const [messageToSend, setMessageToSend] = useState("");
   const [userName, setUserName] = useState("");
-  const SendMessage = (e) => {
-    e.preventDefault();
 
+  const SendMessage = (e) => {
+    // vloží dokument s zprávou a notifikací
+    e.preventDefault();
     console.log(messageToSend, userName);
     addInnerDocument("konverzace", conversationID, {
       autor: userName,
@@ -127,7 +129,9 @@ const Conversation = (props) => {
       <br />
       {/* TODO oprava - když je přihlášený nevlastník knihy nezobrazují se mu zprávy od vlastníka */}
       {/* TODO přidat informaci, od kterých uživatelů jsou nezodpovězené zprávy */}
-      {props.bookOwner === user.displayName && (
+      {addressee} Adresát <br />
+      {}
+      {props.bookOwner === user.displayName && ( // volba adresáta pro vlastníka učebnice
         <>
           <Dropdown>
             <Dropdown.Toggle variant="success" id="addressee-dropdown">
@@ -151,8 +155,9 @@ const Conversation = (props) => {
           <br />
         </>
       )}
-
       <form onSubmit={SendMessage}>
+        {" "}
+        // zadání a odeslání zprávy
         <input
           type="text"
           value={messageToSend}
@@ -166,14 +171,17 @@ const Conversation = (props) => {
       <div className="conversation">
         {messages &&
           messages.map((message) =>
-            (message.addressee === addressee && (message.autor === userName || message.autor === user.email)) || message.autor === addressee ? (
+            (message.addressee === addressee &&
+              (message.autor === userName || message.autor === user.email)) ||
+            message.autor === addressee ? (
               <div
                 key={message.timeStamp}
                 className={
                   message.autor === userName ? "yourMessage" : "otherMessage"
-                }
+                } // roztřízení podle autora zprávy
               >
-                {addressee} ":" {message.addressee} <br /> {userName} ":"{" "}
+                {addressee} ":" {message.addressee} <br /> {userName} ":" //
+                debugovací výpisy
                 {message.autor}
                 {console.log(
                   message.autor,
@@ -181,7 +189,7 @@ const Conversation = (props) => {
                   userName,
                   "userName",
                   addressee,
-                  "addressee"
+                  "addressee",
                 )}
                 <Card key={message.timeStamp}>
                   <Card.Body>
@@ -198,10 +206,9 @@ const Conversation = (props) => {
                 {console.log(message.autor === userName)}
                 "baf"
               </div>
-            )
+            ),
           )}
       </div>
-
       {messages && console.log(messages)}
     </div>
   );

@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-import { useUser } from './UserContext';
-
-
-import UserProfile from "./UsersBooks";
+import { useUser } from "./UserContext";
 
 const NavBar = () => {
   const user = useUser();
-    if (user) {
+  if (user) {
     console.log("Jméno uživatele:", user.displayName);
   }
 

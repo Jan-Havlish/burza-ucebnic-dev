@@ -4,11 +4,18 @@ import { NavLink } from "react-router-dom";
 import "./schoolBook.css";
 
 const SchoolBook = (props) => {
-  const { title, owner, priceRange, kategorie, id, shortMode, unReadComments, isMyBook } =
-    props;
+  const {
+    title,
+    owner,
+    priceRange,
+    kategorie,
+    id,
+    shortMode,
+    unReadComments,
+    isMyBook,
+  } = props;
 
   const isDefaultMode = !shortMode;
-
   const bookHeight = isDefaultMode ? "24rem" : "11rem";
 
   return (
@@ -31,7 +38,11 @@ const SchoolBook = (props) => {
       <Card.Body>
         <Card.Title>{title}</Card.Title>
 
-        {unReadComments ? (isMyBook && <p className="text-danger">nezodpovězené komentáře</p>) : <br />}
+        {unReadComments ? (
+          isMyBook && <p className="text-danger">nezodpovězené komentáře</p>
+        ) : (
+          <br />
+        )}
 
         {isDefaultMode && (
           <>

@@ -4,17 +4,17 @@ import { Card, Button, Form } from "react-bootstrap";
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { projectFirestore } from "./firebase/config";
+import { projectFirestore } from "../firebase/config";
 
 import { collection, addDoc } from "firebase/firestore";
 
-import { storage } from "./firebase/config";
+import { storage } from "../firebase/config";
 
 import { uploadBytesResumable } from "firebase/storage";
 
-import { useUser } from "./components/UserContext";
+import { useUser } from "../components/UserContext";
 
-import { kategorieFullName, kategorie } from "./data/kategore";
+import { kategorieFullName, kategorie } from "../data/kategore";
 
 const AddSchoolBook = () => {
   const user = useUser();
@@ -56,7 +56,7 @@ const AddSchoolBook = () => {
             console.log("downloadURL is empty");
           }
         });
-      }
+      },
     );
   };
 
@@ -113,7 +113,7 @@ const AddSchoolBook = () => {
     try {
       const docRef = await addDoc(
         collection(projectFirestore, collectionName),
-        data
+        data,
       );
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -139,7 +139,7 @@ const AddSchoolBook = () => {
       const category = getItemByIndex(
         kategorieFullName,
         kategorie,
-        selectedOptions[0]
+        selectedOptions[0],
       );
       writeRecordToFirestore(category, newRecord);
       console.log("Data written to Firestore");
@@ -168,7 +168,10 @@ const AddSchoolBook = () => {
               value={selectedOptions}
               onChange={(e) =>
                 setSelectedOptions(
-                  Array.from(e.target.selectedOptions, (option) => option.value)
+                  Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value,
+                  ),
                 )
               }
               required

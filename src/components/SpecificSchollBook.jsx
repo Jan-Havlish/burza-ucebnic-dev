@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import getDocumentById from "../functions/getDocumentById";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import { BiMessage, BiMessageX } from "react-icons/bi";
 import MessageWindow from "./MessageWindow";
 
@@ -78,7 +77,6 @@ const SpecificSchoolBook = () => {
                       <Button
                         variant="primary"
                         onClick={() => {
-
                           setShowMessageWindow(!showMessageWindow);
                         }}
                       >
@@ -91,6 +89,7 @@ const SpecificSchoolBook = () => {
                   <MessageWindow
                     BookID={BookID}
                     owner={book.owner}
+                    ownerEmail={book.ownerEmail}
                     kategorie={kategorie}
                   />
                 )}
