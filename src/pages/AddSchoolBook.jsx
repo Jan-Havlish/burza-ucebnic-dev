@@ -130,6 +130,7 @@ const AddSchoolBook = () => {
       img: pictureOfBook,
       stillAvilable: true,
       owner: user.displayName,
+      ownerEmail: user.email,
       // selectedOptions: selectedOptions,
     };
 

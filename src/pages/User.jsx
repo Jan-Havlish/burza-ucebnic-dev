@@ -8,6 +8,8 @@ import { Card, Button } from "react-bootstrap";
 
 import ChangePassword from "../components/ChangePassword";
 
+import downloadMyActivity from "../functions/downloadMyActivity";
+
 const User = () => {
   const user = useUser();
 
@@ -19,16 +21,23 @@ const User = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [isUsingGoogle, setIsUsingGoogle] = useState(false);
 
-  {/*TODO možnost stáhnout svá data*/}
-  {/*TODO možnost smazat svůj účet*/}
-  
+  const [myBooks, setMyBooks] = useState([]);
+  const [myMessages, setMyMessages] = useState([]);
+
+  {
+    /*TODO možnost stáhnout svá data*/
+  }
+  {
+    /*TODO možnost smazat svůj účet*/
+  }
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsUsingGoogle(user.providerData[0].providerId === "google.com");
       }
     });
-  })
+  });
   return (
     <>
       {user && (
@@ -58,19 +67,33 @@ const User = () => {
                   Odhlásit se
                 </Button>
 
-                  {user.providerData[0].providerId === "google.com" && (
-                    "Je použité Google"
-                  )}
+                {user.providerData[0].providerId === "google.com" &&
+                  "Je použité Google"}
 
-                  { !isUsingGoogle && <Button
-                  onClick={() => setShowChangePassword(!showChangePassword)}
-                  variant="secondary"
+                {!isUsingGoogle && (
+                  <Button
+                    onClick={() => setShowChangePassword(!showChangePassword)}
+                    variant="secondary"
+                  >
+                    Změnit heslo
+                  </Button>
+                )}
+
+                <Button
+                  onClick={() => {
+                    setMyBooks([]);
+                    setMyMessages([]);
+                    downloadMyActivity(
+                      myBooks,
+                      setMyBooks,
+                      myMessages,
+                      setMyBooks,
+                    );
+                  }}
                 >
-                  Změnit heslo
+                  Stáhnout
                 </Button>
-
-                  }
-                
+                {console.log(myBooks, "test hoj")}
               </Card.Text>
               {showChangePassword && <ChangePassword />}
             </Card.Body>
